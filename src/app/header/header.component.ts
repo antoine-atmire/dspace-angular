@@ -10,7 +10,6 @@ import { HeaderToggleAction } from "./header.actions";
   templateUrl: 'header.component.html'
 })
 export class HeaderComponent implements OnInit {
-  public isNavBarCollapsed: Observable<boolean>;
 
   constructor(
     private store: Store<HeaderState>
@@ -18,9 +17,11 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isNavBarCollapsed = this.store.select('header')
-      //unwrap navCollapsed
-      .map(({ navCollapsed }: HeaderState) => navCollapsed);
+  }
+
+  public isNavBarCollapsed(): Observable<boolean> {
+    return this.store.select('header')
+    .map(({ navCollapsed }: HeaderState) => navCollapsed);
   }
 
   public toggle(): void {
