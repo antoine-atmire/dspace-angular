@@ -1,19 +1,16 @@
 <div class="home">
   <h3>Collections</h3>
-  <div [ngSwitch]="(collectionData | async)?.type">
-    <p *ngSwitchCase="RemoteDataStates.NOT_ASKED">Not Asked</p>
-    <p *ngSwitchCase="RemoteDataStates.LOADING">Loading…</p>
-    <p *ngSwitchCase="RemoteDataStates.FAILED">Failed: {{(collectionData | async).errorMsg}}</p>
-    <ul *ngSwitchCase="RemoteDataStates.SUCCESS">
+  <p *ngIf="(collectionData | async).isLoading()">Loading…</p>
+  <p *ngIf="(collectionData | async).isFailed()">Failed: {{(collectionData.errorMessage | async)}}</p>
+  <ul *ngIf="(collectionData | async).isSuccess()">
       <li *ngFor="let collection of (collectionData | async).data">
         {{collection?.name}}<br>
         <span class="text-muted">{{collection?.shortDescription}}</span>
       </li>
     </ul>
-  </div>
   <h3>Items</h3>
   <ul>
-    <li *ngFor="let item of (itemData.data | async)">
+    <li *ngFor="let item of (itemData | async).data">
       {{item?.name}}<br>
       <span class="text-muted">{{item?.findMetadata('dc.description.abstract')}}</span>
     </li>

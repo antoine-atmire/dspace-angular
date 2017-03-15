@@ -7,11 +7,6 @@ import { ItemDataService } from "../core/data-services/item-data.service";
 import { ObjectCacheService } from "../core/cache/object-cache.service";
 import {
   RemoteData,
-  RemoteDataStates,
-  RemoteDataNotAsked,
-  RemoteDataLoading,
-  RemoteDataFailed,
-  RemoteDataSuccess
 } from "../core/data-services/remote-data";
 
 @Component({
@@ -25,7 +20,6 @@ export class HomeComponent implements OnInit {
   data: any = {};
   collectionData: Observable<RemoteData<Collection[]>>;
   itemData: Observable<RemoteData<Item[]>>;
-  RemoteDataStates = RemoteDataStates;
 
   constructor(
     private cds: CollectionDataService,

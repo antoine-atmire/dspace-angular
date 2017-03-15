@@ -1,33 +1,54 @@
-export const RemoteDataStates = {
-  NOT_ASKED: 'NotAsked',
-  LOADING: 'Loading',
-  FAILED: 'Failed',
-  SUCCESS: 'Success'
-};
+export type RemoteData<T>
+  = RemoteDataNotAsked
+  | RemoteDataLoading
+  | RemoteDataFailed
+  | RemoteDataSuccess<T>;
 
 
-export interface RemoteDataState {
-  type: string;
+export class RemoteDataState {
+
+  public isNotAsked() {
+    return false;
+  }
+
+  public isLoading() {
+    return false;
+  }
+
+  public isFailed() {
+    return false;
+  }
+
+  public isSuccess() {
+    return false;
+  }
+
 }
 
-export class RemoteDataNotAsked implements RemoteDataState{
-  type = RemoteDataStates.NOT_ASKED;
-  constructor() {}
+
+export class RemoteDataNotAsked extends RemoteDataState{
+  public isNotAsked() {
+    return true
+  }
 }
 
-export class RemoteDataLoading implements RemoteDataState {
-  type = RemoteDataStates.LOADING;
-  constructor() {}
+export class RemoteDataLoading extends RemoteDataState {
+  public isLoading() {
+    return true;
+  }
 }
 
-export class RemoteDataFailed implements RemoteDataState {
-  type = RemoteDataStates.FAILED;
-  constructor(public errorMsg: string) {}
+export class RemoteDataFailed extends RemoteDataState {
+  constructor(public errorMessage:string){ super(); }
+  public isFailed() {
+    return true;
+  }
 }
 
-export class RemoteDataSuccess<T> implements RemoteDataState {
-  type = RemoteDataStates.SUCCESS;
-  constructor(public data: T) {}
+export class RemoteDataSuccess<T> extends RemoteDataState {
+  constructor(public data: T) { super(); }
+  public isSuccess() {
+    return true;
+  }
 }
 
-export type RemoteData<T> = RemoteDataNotAsked | RemoteDataLoading | RemoteDataFailed | RemoteDataSuccess<T>;
