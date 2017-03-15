@@ -6,6 +6,7 @@ import { CacheableObject } from "../cache/object-cache.reducer";
 import { ParamHash } from "../shared/param-hash";
 import { isNotEmpty } from "../../shared/empty.util";
 import { GenericConstructor } from "../shared/generic-constructor";
+import { RemoteData, RemoteDataLoading, RemoteDataFailed, RemoteDataSuccess } from "./remote-data";
 
 export abstract class DataService<T extends CacheableObject> {
   abstract serviceName: OpaqueToken;
@@ -16,29 +17,41 @@ export abstract class DataService<T extends CacheableObject> {
 
   }
 
-  findAll(scopeID?: string): Observable<Array<T>> {
+  findAll(scopeID?: string): Observable<RemoteData<Array<T>>> {
     const key = new ParamHash(this.serviceName, 'findAll', scopeID).toString();
     return this.requestCache.findAll(key, this.serviceName, scopeID)
-      //get an observable of the IDs from the RequestCache
-      .map(entry => entry.resourceUUIDs)
-      .flatMap((resourceUUIDs: Array<string>) => {
-        // use those IDs to fetch the actual objects from the ObjectCache
-        return this.objectCache.getList<T>(resourceUUIDs, this.modelType);
+      .flatMap(entry => {
+        if (entry.isLoading) {
+          return Observable.of(new RemoteDataLoading());
+        }
+        else if (entry.errorMessage) {
+          return Observable.of(new RemoteDataFailed(entry.errorMessage));
+        }
+        else {
+          return this.objectCache.getList<T>(entry.resourceUUIDs, this.modelType)
+            .map(t => new RemoteDataSuccess(t));
+        }
       });
   }
 
-  findById(id: string): Observable<T> {
+  findById(id: string): Observable<RemoteData<T>> {
     const key = new ParamHash(this.serviceName, 'findById', id).toString();
     return this.requestCache.findById(key, this.serviceName, id)
-      .map(entry => entry.resourceUUIDs)
-      .flatMap((resourceUUIDs: Array<string>) => {
-        if(isNotEmpty(resourceUUIDs)) {
-          return this.objectCache.get<T>(resourceUUIDs[0], this.modelType);
+      .flatMap(entry => {
+        if (entry.isLoading) {
+          return Observable.of(new RemoteDataLoading());
+        }
+        else if (entry.errorMessage) {
+          return Observable.of(new RemoteDataFailed(entry.errorMessage));
+        }
+        else if(isNotEmpty(entry.resourceUUIDs)) {
+            return this.objectCache.get<T>(entry.resourceUUIDs[0], this.modelType)
+              .map(t => new RemoteDataSuccess(t));
         }
         else {
-          return Observable.of(undefined);
+          return Observable.of(new RemoteDataSuccess(undefined));
         }
-      });
+      })
   }
 
 }

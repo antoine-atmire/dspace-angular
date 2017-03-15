@@ -1,3 +1,21 @@
 <div class="home">
-  Home component
+  <h3>Collections</h3>
+  <div [ngSwitch]="(collectionData | async)?.type">
+    <p *ngSwitchCase="RemoteDataStates.NOT_ASKED">Not Asked</p>
+    <p *ngSwitchCase="RemoteDataStates.LOADING">Loading…</p>
+    <p *ngSwitchCase="RemoteDataStates.FAILED">Failed: {{(collectionData | async).errorMsg}}</p>
+    <ul *ngSwitchCase="RemoteDataStates.SUCCESS">
+      <li *ngFor="let collection of (collectionData | async).data">
+        {{collection?.name}}<br>
+        <span class="text-muted">{{collection?.shortDescription}}</span>
+      </li>
+    </ul>
+  </div>
+  <h3>Items</h3>
+  <ul>
+    <li *ngFor="let item of (itemData.data | async)">
+      {{item?.name}}<br>
+      <span class="text-muted">{{item?.findMetadata('dc.description.abstract')}}</span>
+    </li>
+  </ul>
 </div>

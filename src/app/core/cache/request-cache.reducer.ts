@@ -17,7 +17,7 @@ export class RequestCacheEntry implements CacheEntry {
   key: string;
   scopeID: string;
   resourceID: string;
-  resourceUUIDs: Array<String>;
+  resourceUUIDs: Array<string>;
   resourceType: String;
   isLoading: boolean;
   errorMessage: string;

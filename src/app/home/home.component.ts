@@ -1,4 +1,18 @@
-import { Component, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ViewEncapsulation, OnInit } from '@angular/core';
+import { Observable } from "rxjs";
+import { Collection } from "../core/shared/collection.model";
+import { Item } from "../core/shared/item.model";
+import { CollectionDataService } from "../core/data-services/collection-data.service";
+import { ItemDataService } from "../core/data-services/item-data.service";
+import { ObjectCacheService } from "../core/cache/object-cache.service";
+import {
+  RemoteData,
+  RemoteDataStates,
+  RemoteDataNotAsked,
+  RemoteDataLoading,
+  RemoteDataFailed,
+  RemoteDataSuccess
+} from "../core/data-services/remote-data";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.Default,
@@ -7,16 +21,27 @@ import { Component, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/
   styleUrls: ['./home.component.css'],
   templateUrl: './home.component.html'
 })
-export class HomeComponent {
-
+export class HomeComponent implements OnInit {
   data: any = {};
+  collectionData: Observable<RemoteData<Collection[]>>;
+  itemData: Observable<RemoteData<Item[]>>;
+  RemoteDataStates = RemoteDataStates;
 
-  constructor() {
+  constructor(
+    private cds: CollectionDataService,
+    private ids: ItemDataService,
+    private objectCache: ObjectCacheService
+  ) {
     this.universalInit();
   }
 
   universalInit() {
 
+  }
+
+  ngOnInit(): void {
+    this.collectionData = this.cds.findAll();
+    this.itemData = this.ids.findAll();
   }
 
 }

@@ -93,7 +93,7 @@ export class MainModule {
   doRehydrate() {
     let defaultValue = {};
     let serverCache = this._getCacheValue(NGRX_CACHE_KEY, defaultValue);
-    this.store.dispatch(new RehydrateStoreAction(serverCache));
+    // this.store.dispatch(new RehydrateStoreAction(serverCache));
   }
 
   _getCacheValue(key: string, defaultValue: any): any {
