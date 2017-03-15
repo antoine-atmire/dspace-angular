@@ -1,8 +1,8 @@
 <div class="home">
   <h3>Collections</h3>
-  <p *ngIf="(collectionData.loading | async)">Loading…</p>
-  <p *ngIf="(collectionData.failed | async)">Failed: {{(collectionData.errorMessage | async)}}</p>
-  <ul *ngIf="(collectionData.success | async)">
+  <p *ngIf="(collectionData.isLoading() | async)">Loading…</p>
+  <p *ngIf="(collectionData.isFailed() | async)">Failed: {{(collectionData.errorMessage | async)}}</p>
+  <ul *ngIf="(collectionData.isSuccess() | async)">
     <li *ngFor="let collection of (collectionData.data | async)">
       {{collection?.name}}<br>
       <span class="text-muted">{{collection?.shortDescription}}</span>

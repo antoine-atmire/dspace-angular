@@ -6,7 +6,7 @@ import { CacheableObject } from "../cache/object-cache.reducer";
 import { ParamHash } from "../shared/param-hash";
 import { isNotEmpty } from "../../shared/empty.util";
 import { GenericConstructor } from "../shared/generic-constructor";
-import { RemoteData } from "./remote-data";
+import { RemoteData, toRemoteDataState } from "./remote-data";
 
 export abstract class DataService<T extends CacheableObject> {
   abstract serviceName: OpaqueToken;
@@ -21,7 +21,7 @@ export abstract class DataService<T extends CacheableObject> {
     const key = new ParamHash(this.serviceName, 'findAll', scopeID).toString();
     const requestCacheObs = this.requestCache.findAll(key, this.serviceName, scopeID);
     return new RemoteData(
-      requestCacheObs.map(entry => entry.isLoading).distinctUntilChanged(),
+      requestCacheObs.map(toRemoteDataState).distinctUntilChanged(),
       requestCacheObs.map(entry => entry.errorMessage).distinctUntilChanged(),
       requestCacheObs
         .map(entry => entry.resourceUUIDs)
@@ -36,7 +36,7 @@ export abstract class DataService<T extends CacheableObject> {
     const key = new ParamHash(this.serviceName, 'findById', id).toString();
     const requestCacheObs = this.requestCache.findById(key, this.serviceName, id);
     return new RemoteData(
-      requestCacheObs.map(entry => entry.isLoading).distinctUntilChanged(),
+      requestCacheObs.map(toRemoteDataState).distinctUntilChanged(),
       requestCacheObs.map(entry => entry.errorMessage).distinctUntilChanged(),
       requestCacheObs
         .map(entry => entry.resourceUUIDs)
