@@ -21,7 +21,6 @@ export abstract class DataService<T extends CacheableObject> {
     const key = new ParamHash(this.serviceName, 'findAll', scopeID).toString();
     const requestCacheObs = this.requestCache.findAll(key, this.serviceName, scopeID);
     return new RemoteData(
-      Observable.of(false),
       requestCacheObs.map(entry => entry.isLoading).distinctUntilChanged(),
       requestCacheObs.map(entry => entry.errorMessage).distinctUntilChanged(),
       requestCacheObs
@@ -37,7 +36,6 @@ export abstract class DataService<T extends CacheableObject> {
     const key = new ParamHash(this.serviceName, 'findById', id).toString();
     const requestCacheObs = this.requestCache.findById(key, this.serviceName, id);
     return new RemoteData(
-      Observable.of(false),
       requestCacheObs.map(entry => entry.isLoading).distinctUntilChanged(),
       requestCacheObs.map(entry => entry.errorMessage).distinctUntilChanged(),
       requestCacheObs
